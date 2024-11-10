@@ -228,26 +228,17 @@ export function getNeutralColors(color: Color, steps =5): Color[] {
 
 export function toRGBString(color: Color, percentage = false): string {
 
-    const rp = color.r.toFixed(2)
-    const gp = color.g.toFixed(2);
-    const bp = color.b.toFixed(2);
-
-    const r = (color.r * 255).toFixed(0)
-    const g = (color.g * 255).toFixed(0)
-    const b = (color.b * 255).toFixed(0)
-    return percentage ? `rgb(${rp}%, ${gp}%, ${bp}%)` : `rgb(${r}, ${g}, ${b})`;
-}
-
-export function toRGBAString(color: Color): string {
-
     const baseColor = color.to('srgb');
+
+
+    const rp = baseColor.r.toFixed(2)
+    const gp = baseColor.g.toFixed(2);
+    const bp = baseColor.b.toFixed(2);
 
     const r = (baseColor.r * 255).toFixed(0)
     const g = (baseColor.g * 255).toFixed(0)
     const b = (baseColor.b * 255).toFixed(0)
-    const a = baseColor.alpha.toFixed(2);
-
-    return `rgba(${r}, ${g}, ${b}, ${a})`;
+    return percentage ? `rgb(${rp}%, ${gp}%, ${bp}%)` : `rgb(${r}, ${g}, ${b})`;
 }
 
 export function toHSLString(color: Color): string {

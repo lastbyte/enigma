@@ -17,7 +17,7 @@ const initialState: AppUiState = {
     isDrawerOpen: false,
     selectedCategory: "",
     selectedNavValue: "home",
-    theme: 'teams_dark',
+    theme: 'teams_light',
     breadcrumbs: [{
         name: "Home",
         link: "/"

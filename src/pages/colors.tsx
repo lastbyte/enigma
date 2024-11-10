@@ -8,6 +8,8 @@ import {
     CardPreview,
     ColorSwatch,
     Divider,
+    Field,
+    Input,
     makeStyles,
     Table,
     TableBody,
@@ -54,6 +56,7 @@ import {
     toHSLString,
     toRGBString
 } from "../utils/colorss";
+import parse from "color-parse";
 
 
 const useStyles = makeStyles({
@@ -87,7 +90,9 @@ const useStyles = makeStyles({
     },
     picker: {
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "column",
+        gap :"32px",
+        fontSize  :"2rem"
     },
     colorHarmoniesContainer: {
         width: "100%",
@@ -138,7 +143,8 @@ const columns = [
 
 export default function Colors() {
     const styles = useStyles();
-    const [color, setColor] = useState("#10ff0c");
+    const [color, setColor] = useState(new Color("#10ff0c"));
+    const [colorInput, setColorInput] = useState("#10ff0c");
 
     const toasterId = useId();
     const {dispatchToast} = useToastController(toasterId);
@@ -149,94 +155,94 @@ export default function Colors() {
             </Toast>,
             {intent: "info"}
         );
-    const harmonies = (color: string) => [
+    const harmonies = (color: Color) => [
         {
             displayName: "Complementary",
-            colors: getComplementaryColor(new Color(color))
+            colors: getComplementaryColor(color)
         },
         {
             displayName: "Analogous",
-            colors: getAnalogousColors(new Color(color))
+            colors: getAnalogousColors(color)
         },
         {
             displayName: "Triadic",
-            colors: getTriadicColors(new Color(color))
+            colors: getTriadicColors(color)
         },
         {
             displayName: "Split Complimentary",
-            colors: getSplitComplementaryColors(new Color(color))
+            colors: getSplitComplementaryColors(color)
         },
         {
             displayName: "Split Complimentary CW",
-            colors: getSplitComplementaryCWColors(new Color(color))
+            colors: getSplitComplementaryCWColors(color)
         },
         {
             displayName: "Split Complimentary CCW",
-            colors: getSplitComplementaryCCWColors(new Color(color))
+            colors: getSplitComplementaryCCWColors(color)
         },
         {
             displayName: "Tetradic",
-            colors: getTetradicColors(new Color(color))
+            colors: getTetradicColors(color)
         },
         {
             displayName: "Square",
-            colors: getSquareColors(new Color(color))
+            colors: getSquareColors(color)
         },
         {
             displayName: "Monochromatic",
-            colors: getMonochromaticColors(new Color(color))
+            colors: getMonochromaticColors(color)
         },
         {
             displayName: "Clash Colors",
-            colors: getClashColors(new Color(color))
+            colors: getClashColors(color)
         },
         {
             displayName: "Four Tone CW",
-            colors: getFourToneCWColors(new Color(color))
+            colors: getFourToneCWColors(color)
         },
         {
             displayName: "Four Tone CCW",
-            colors: getFourToneCCWColors(new Color(color))
+            colors: getFourToneCCWColors(color)
         },
         {
             displayName: "Five Tone A",
-            colors: getFiveToneAColors(new Color(color))
+            colors: getFiveToneAColors(color)
         },
         {
             displayName: "Five Tone B",
-            colors: getFiveToneBColors(new Color(color))
+            colors: getFiveToneBColors(color)
         },
         {
             displayName: "Five Tone C",
-            colors: getFiveToneCColors(new Color(color))
+            colors: getFiveToneCColors(color)
         },
         {
             displayName: "Five Tone D",
-            colors: getFiveToneDColors(new Color(color))
+            colors: getFiveToneDColors(color)
         },
         {
             displayName: "Five Tone E",
-            colors: getFiveToneEColors(new Color(color))
+            colors: getFiveToneEColors(color)
         },
         {
             displayName: "Five Tone F",
-            colors: getFiveToneFColors(new Color(color))
+            colors: getFiveToneFColors(color)
         },
         {
             displayName: "Six Tone CW",
-            colors: getSixToneCWColors(new Color(color))
+            colors: getSixToneCWColors(color)
         },
         {
             displayName: "Six Tone CCW",
-            colors: getSixToneCCWColors(new Color(color))
+            colors: getSixToneCCWColors(color)
         },
         {
             displayName: "Seven Tone Colors",
-            colors: getSevenToneColors(new Color(color))
+            colors: getSevenToneColors(color)
         },
         {
             displayName: "Neutral Colors",
-            colors: getNeutralColors(new Color(color))
+            colors: getNeutralColors(color)
         }
     ]
 
@@ -244,15 +250,15 @@ export default function Colors() {
         return [
             {
                 color_format: "Nearest Color Name",
-                value: getColorName(color).name
+                value: getColorName(toHexString(color)).name
             },
             {
                 color_format: "Nearest Color code",
-                value: getColorName(color).value,
+                value: getColorName(toHexString(color)).value,
             },
             {
                 color_format: "HEX",
-                value: color
+                value: toHexString(color)
             },
             {
                 color_format: "RGB",
@@ -266,8 +272,25 @@ export default function Colors() {
     }
 
     function onColorChanged(color: string) {
-        console.log("Color changed to ", color);
-        setColor(color);
+        setColor(new Color(color));
+        setColorInput(toHexString(new Color(color)));
+    }
+
+    function handleColorInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+        try {
+            const colorParsed = parse(e.target.value);
+            setColorInput(e.target.value);
+            if (!colorParsed){
+                return;
+            } else if (colorParsed.space === "rgb") {
+                // @ts-ignore
+                setColor(new Color(e.target.value));
+            } else if (colorParsed.space === "hsl") {
+                // @ts-ignore
+                setColor(new Color(e.target.value));
+            }
+        }catch (e) {
+        }
     }
 
     return (
@@ -275,10 +298,13 @@ export default function Colors() {
             <div style={{height: "40px"}}></div>
             <Card appearance={"subtle"} className={styles.colorInputSection}>
                 <div className={styles.picker}>
+                    <Field>
+                        <Input value={colorInput} onChange={handleColorInputChange}  input={{style:{textAlign : "center", fontFamily :"monospace"}}} size={"large"} appearance={"filled-darker"}/>
+                    </Field>
                     <HexAlphaColorPicker style={{
                         height: "300px",
                         width: "300px",
-                    }} defaultValue={"#654321"} color={color} onChange={onColorChanged}/>
+                    }} defaultValue={"#654321"} color={toHexString(color)} onChange={onColorChanged}/>
                 </div>
                 <div className={styles.conversionTableContainer}>
                     <div style={{width: "100%"}}>
@@ -330,19 +356,19 @@ export default function Colors() {
                     />
                     <CardPreview>
                         <div className={styles.swatches}>
-                            {generateTones(new Color(color), 10).map((col) => {
+                            {generateTones(color, 10).map((col) => {
                                 return <Tooltip content={toHexString(col)} relationship={"label"}>
                                     <ColorSwatch
                                         onDoubleClick={() => {
-                                            setColor(toHexString(col))
+                                            setColor(col)
                                         }}
                                         onClick={() => {
                                             navigator.clipboard.writeText(toHexString(col)).then(() => {
                                                 notify(toHexString(col));
                                             }).catch(console.log)
                                         }}
-                                        className={styles.colorSwatch} color={col.toString()}
-                                        value={col.toString()}/>
+                                        className={styles.colorSwatch} color={toHexString(col)}
+                                        value={toHexString(col)}/>
                                 </Tooltip>
                             })}
                         </div>
@@ -371,15 +397,15 @@ export default function Colors() {
                                 return <Tooltip content={toHexString(col)} relationship={"label"}>
                                     <ColorSwatch
                                         onDoubleClick={() => {
-                                            setColor(toHexString(col))
+                                            setColor(col)
                                         }}
                                         onClick={() => {
                                             navigator.clipboard.writeText(toHexString(col)).then(() => {
                                                 notify(toHexString(col));
                                             }).catch(console.log)
                                         }}
-                                        className={styles.colorSwatch} color={col.toString()}
-                                        value={col.toString()}/>
+                                        className={styles.colorSwatch} color={toHexString(col)}
+                                        value={toHexString(col)}/>
                                 </Tooltip>
                             })}
                         </div>
@@ -408,15 +434,15 @@ export default function Colors() {
                                 return <Tooltip content={toHexString(col)} relationship={"label"}>
                                     <ColorSwatch
                                         onDoubleClick={() => {
-                                            setColor(toHexString(col))
+                                            setColor(col)
                                         }}
                                         onClick={() => {
                                             navigator.clipboard.writeText(toHexString(col)).then(() => {
                                                 notify(toHexString(col));
                                             }).catch(console.log)
                                         }}
-                                        className={styles.colorSwatch} color={col.toString()}
-                                        value={col.toString()}/>
+                                        className={styles.colorSwatch} color={toHexString(col)}
+                                        value={toHexString(col)}/>
                                 </Tooltip>
                             })}
                         </div>
@@ -450,15 +476,15 @@ export default function Colors() {
                                                     return <Tooltip content={toHexString(col)} relationship={"label"}>
                                                         <ColorSwatch
                                                             onDoubleClick={() => {
-                                                                setColor(toHexString(col))
+                                                                setColor(col)
                                                             }}
                                                             onClick={() => {
                                                                 navigator.clipboard.writeText(toHexString(col)).then(() => {
                                                                     notify(toHexString(col));
                                                                 }).catch(console.log)
                                                             }}
-                                                            className={styles.colorSwatch} color={col.toString()}
-                                                            value={col.toString()}/>
+                                                            className={styles.colorSwatch} color={toHexString(col)}
+                                                            value={toHexString(col)}/>
                                                     </Tooltip>
                                                 })}
                                             </div>

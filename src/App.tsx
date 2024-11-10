@@ -29,8 +29,13 @@ import Hashing from "./pages/hashing";
 import EncodingDecoding from "./pages/EncodingDecoding";
 import {AppFolder20Regular, Settings20Regular} from "@fluentui/react-icons";
 import {PATH_NAMES} from "./common/pathUtils";
-import {BoxToolbox24Regular} from "@fluentui/react-icons/lib/fonts";
+import {Toolbox32Regular} from "@fluentui/react-icons/lib/fonts";
 import Colors from "./pages/colors";
+import UUID from "./pages/uuid";
+import Lorem from "./pages/lorem";
+import Number from "./pages/number";
+import Base from "./pages/base";
+import Password from "./pages/password";
 
 
 const useStyles = makeStyles({
@@ -59,7 +64,6 @@ const useStyles = makeStyles({
     brandName: {
         fontSize: "1.5rem",
         backgroundColor : "transparent",
-        textTransform : "uppercase",
         "&:hover" : {
             backgroundColor : "transparent"
         }
@@ -116,12 +120,12 @@ const App = (props: Partial<NavDrawerProps>) => {
                             </Tooltip>
                         </div>
                         <AppItem
-                            icon={<BoxToolbox24Regular />}
+                            icon={<Toolbox32Regular />}
                             as="a"
                             href={"/"}
                             className={styles.brandName}
                         >
-                            Enigma
+                            <code>{selectedNavValue.split("_").join(" ")}</code>
                         </AppItem>
                         <Popover trapFocus closeOnScroll positioning={"before-top"}>
                             <PopoverTrigger disableButtonEnhancement>
@@ -163,6 +167,11 @@ const App = (props: Partial<NavDrawerProps>) => {
                             <Route path={PATH_NAMES.HASHING} element={<Hashing/>}/>
                             <Route path={PATH_NAMES.ENCODING_DECODING} element={<EncodingDecoding/>}/>
                             <Route path={PATH_NAMES.COLORS} element={<Colors/>}/>
+                            <Route path={PATH_NAMES.UUID} element={<UUID/>}/>
+                            <Route path={PATH_NAMES.LOREM} element={<Lorem/>}/>
+                            <Route path={PATH_NAMES.RANDOM_NUMBER} element={<Number />}/>
+                            <Route path={PATH_NAMES.BASE_CONVERTER} element={<Base/>}/>
+                            <Route path={PATH_NAMES.PASSWORD} element={<Password/>}/>
                         </Routes>
                     </div>
                 </div>
