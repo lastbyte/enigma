@@ -33,11 +33,17 @@ const useStyles = makeStyles({
         fontSize: "2rem",
         fontWeight: 600,
         minWidth: "400px",
+        width  :"fit-content",
         minHeight: "60px",
         lineHeight: 2,
         textAlign: "center",
         verticalAlign: "bottom",
-        ...shorthands.borderBottom('2px', 'solid', 'var(--colorBrandForeground1)')
+        ...shorthands.borderBottom('2px', 'solid', 'var(--colorBrandForeground1)'),
+        "@media (max-width: 768px)": {
+            fontSize: "1rem",
+            minHeight: "30px",
+            minWidth: "200px",
+        }
     },
     sliderContainer: {
         display: "flex",
@@ -134,7 +140,7 @@ export default function Password() {
                 </Combobox>
                 <div className={styles.sliderContainer}>
                     <Label>Length</Label>
-                    <Slider min={5} max={50} value={passwordLength} step={1} onChange={onPasswordLengthChange}/>
+                    <Slider min={5} max={30} value={passwordLength} step={1} onChange={onPasswordLengthChange}/>
                     <Label style={{minWidth : "1.5"}} aria-hidden>{passwordLength}</Label>
                 </div>
                 <Button onClick={onGenerateClicked}>Generate</Button>
